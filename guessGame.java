@@ -28,6 +28,42 @@ public class guessGame extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        
+        // http://code.makery.ch/blog/javafx-dialogs-official/
+        final Popup startPopup = new Popup();
+        startPopup.setX(600);
+        startPopup.setY(300);
+        
+        
+       
+
+        primaryStage.setTitle("GUESS GAME!");
+        primaryStage.setScene(gameRounds(maxValue));
+        primaryStage.show();
+
+
+
+        int round = 0;
+        int limitRounds = 0; // hvor mange forsøk from user
+        boolean roundRun = true;
+        
+        while (roundRun) {
+           
+            
+            if () {
+                roundRun = false;
+            }
+            
+        }
+
+
+
+
+
+
+    }
+       
+    public Scene gameRounds(int max) {
         Button btn1 = new Button("main click");
         Button btn2 = new Button("alternative click");
 
@@ -82,14 +118,12 @@ public class guessGame extends Application {
 
         BorderPane bp = new BorderPane();
         bp.setBottom(hb);
-        //bp.setTop(sceneTitle);
         bp.setLeft(userInteraction);
         bp.setRight(vbRight);
 
-
-        int randInt = randomNum(100);
+        
+        int randInt = randomNum(max); // value n for max value
         System.out.println(randInt);
-
 
         submit.setOnAction((event) -> {
             if (userText.getText() != null) {
@@ -111,32 +145,12 @@ public class guessGame extends Application {
                 userNum.setText("No new number from user");
             }
         } );
-
-
-
-
-        Scene mainScene = new Scene(bp,600,400);
-
-        primaryStage.setTitle("GUESS GAME!");
-        primaryStage.setScene(mainScene);
-        primaryStage.show();
-
-
-
-        int round = 0;
-        int limitRounds = 0;
         
-        while (round < limitRounds) {
-
-        }
-
-
-
-
-
-
+        Scene mainScene = new Scene(bp,600,400);
+        
+        return mainScene;
     }
-
+    
     public void round () {
 
 
