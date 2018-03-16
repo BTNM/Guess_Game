@@ -5,19 +5,18 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import javax.swing.text.LabelView;
+import java.util.Optional;
 import java.util.Random;
 
 public class guessGame extends Application {
@@ -30,15 +29,26 @@ public class guessGame extends Application {
     public void start(Stage primaryStage) {
         
         // http://code.makery.ch/blog/javafx-dialogs-official/
-        final Popup startPopup = new Popup();
-        startPopup.setX(600);
-        startPopup.setY(300);
+
+        TextInputDialog gameInput = new TextInputDialog();
+        gameInput.setTitle("Game Start");
+        gameInput.setHeaderText("Please input max limit for value, and amount tries!");
+
+        Optional<String> maxValue = gameInput.showAndWait();
+        if (maxValue.isPresent()) {
+            System.out.println(maxValue);
+        }
+
+        Optional<String> tries = gameInput.showAndWait();
+        tries.ifPresent(t -> System.out.println(t) );
+
         
-        
-       
+
+
+
 
         primaryStage.setTitle("GUESS GAME!");
-        primaryStage.setScene(gameRounds(maxValue));
+        primaryStage.setScene(gameRounds(100));
         primaryStage.show();
 
 
@@ -47,14 +57,14 @@ public class guessGame extends Application {
         int limitRounds = 0; // hvor mange forsøk from user
         boolean roundRun = true;
         
-        while (roundRun) {
-           
-            
-            if () {
-                roundRun = false;
-            }
-            
-        }
+//        while (roundRun) {
+//
+//
+////            if () {
+////                roundRun = false;
+////            }
+//
+//        }
 
 
 
