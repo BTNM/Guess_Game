@@ -38,6 +38,11 @@ public class guessGame extends Application {
 
         Button btn1 = new Button("main click");
         Button btn2 = new Button("alternative click");
+        Button btn3 = new Button("Replay Game");
+
+        btn3.setOnAction( (event -> {
+            intro();
+        }) );
 
         btn1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -130,11 +135,11 @@ public class guessGame extends Application {
         } );
 
         Scene mainScene = new Scene(bp,600,400);
-
+       
         primaryStage.setTitle("GUESS GAME!");
         primaryStage.setScene(mainScene);
         primaryStage.show();
-        
+
 
 
 
