@@ -13,11 +13,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import javax.swing.text.LabelView;
 import java.util.Optional;
 import java.util.Random;
 
@@ -30,7 +28,11 @@ public class guessGame extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        intro();
+        Pair<String, String> tempInput = intro();
+//        String max = tempInput.getKey() ;
+//        String attempts = tempInput.getValue();
+//        System.out.println(max + attempts);
+        System.out.println(tempInput.getKey()+2);
 
         Button btn1 = new Button("main click");
         Button btn2 = new Button("alternative click");
@@ -90,8 +92,10 @@ public class guessGame extends Application {
         bp.setRight(vbRight);
 
 
-        int randInt = randomNum(max); // value n for max value
-        System.out.println(randInt);
+
+        int randInt = 100;
+//        int randInt = randomNum(Integer.valueOf(max)); // value n for max value
+//        System.out.println(randInt);
 
         submit.setOnAction((event) -> {
             if (userText.getText() != null) {
@@ -117,7 +121,7 @@ public class guessGame extends Application {
         Scene mainScene = new Scene(bp,600,400);
 
         primaryStage.setTitle("GUESS GAME!");
-        primaryStage.setScene(gameRounds(100));
+        primaryStage.setScene(mainScene);
         primaryStage.show();
 
 
@@ -132,7 +136,7 @@ public class guessGame extends Application {
     }
 
 
-    public Pair<String,String> intro() {
+    public Pair<String, String> intro() {
         // http://code.makery.ch/blog/javafx-dialogs-official/
 
 //        TextInputDialog gameInput = new TextInputDialog();
@@ -188,7 +192,8 @@ public class guessGame extends Application {
 
         });
 
-        return result;
+//        return new Pair<String, String>(maxValue.getText(),attempts.getText());
+        return new Pair<>(maxValue.getText(),attempts.getText());
     }
 
 
@@ -279,12 +284,7 @@ public class guessGame extends Application {
 //
 //        return mainScene;
 //    }
-    
-    public void round () {
 
-
-
-    }
 
     public int  randomNum(int max) {
         Random rand = new Random();
