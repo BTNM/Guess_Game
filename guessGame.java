@@ -29,10 +29,12 @@ public class guessGame extends Application {
     public void start(Stage primaryStage) {
 
         Pair<String, String> tempInput = intro();
-//        String max = tempInput.getKey() ;
-//        String attempts = tempInput.getValue();
-//        System.out.println(max + attempts);
-        System.out.println(tempInput.getKey()+2);
+        System.out.println("max value:"+tempInput.getKey());
+        System.out.println("attempt number:"+tempInput.getValue());
+
+        int randInt = Integer.valueOf(tempInput.getKey() );
+        int attempts = Integer.valueOf(tempInput.getValue() );
+
 
         Button btn1 = new Button("main click");
         Button btn2 = new Button("alternative click");
@@ -63,14 +65,21 @@ public class guessGame extends Application {
         Label userNum = new Label("0");
         Button submit = new Button("Submit");
 
-        ListView<Label> prevGuesses = new ListView<>();
-        VBox vbRight = new VBox();
-        vbRight.setPadding(new Insets(5,50,10,10));
-        vbRight.getChildren().add(prevGuesses);
-
+        Label attemptText = new Label("Number of attempts left:");
+        Label numAttempts = new Label(String.valueOf(attempts));
         Label userShowText = new Label("Previous user guess:");
         Label showHighLow = new Label("=");
         Label unknownNum = new Label("?");
+
+        HBox attemptPart = new HBox();
+        attemptPart.setSpacing(10);
+        attemptPart.setPadding(new Insets(10));
+        attemptPart.getChildren().addAll(attemptText,numAttempts);
+
+        ListView<Label> prevGuesses = new ListView<>();
+        VBox vbRight = new VBox();
+        vbRight.setPadding(new Insets(5,50,10,10));
+        vbRight.getChildren().addAll(attemptPart, prevGuesses);
 
 
         HBox prevUserGuessRow = new HBox();
@@ -92,12 +101,8 @@ public class guessGame extends Application {
         bp.setRight(vbRight);
 
 
-
-        int randInt = 100;
-//        int randInt = randomNum(Integer.valueOf(max)); // value n for max value
-//        System.out.println(randInt);
-
         submit.setOnAction((event) -> {
+
             if (userText.getText() != null) {
                 userNum.setText(userText.getText());
                 Label guess = new Label(userText.getText());
@@ -116,6 +121,12 @@ public class guessGame extends Application {
             } else {
                 userNum.setText("No new number from user");
             }
+            int aLeft = attempts-prevGuesses.getItems().size();
+            numAttempts.setText(String.valueOf(aLeft ));
+            if (aLeft <= 0) {
+                wonLoseResult.setText("Game Over, You ran out of attempts!");
+            }
+
         } );
 
         Scene mainScene = new Scene(bp,600,400);
@@ -123,13 +134,7 @@ public class guessGame extends Application {
         primaryStage.setTitle("GUESS GAME!");
         primaryStage.setScene(mainScene);
         primaryStage.show();
-
-
-
-        int round = 0;
-        int limitRounds = 0; // hvor mange forsøk from user
-        boolean roundRun = true;
-
+        
 
 
 
@@ -151,6 +156,7 @@ public class guessGame extends Application {
 //        Optional<String> tries = gameInput.showAndWait();
 //        tries.ifPresent(t -> System.out.println(t) );
 
+        // create custom dialog
         Dialog<Pair<String, String>> gameInput = new Dialog<>();
         gameInput.setTitle("Game Start");
         gameInput.setHeaderText("Please input max limit for value, and amount tries!");
@@ -163,6 +169,7 @@ public class guessGame extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(20)); // around element
 
+        // labels and textfields
         TextField maxValue = new TextField();
         maxValue.setPromptText("Write max random value");
         Label mLabel = new Label("Max Value: ");
@@ -179,6 +186,7 @@ public class guessGame extends Application {
 
         gameInput.getDialogPane().setContent(grid);
 
+        // Convert the result to a key-value-pair when the login button is clicked.
         gameInput.setResultConverter(t -> {
             if (t == loginButtonType) {
                 return new Pair<>(maxValue.getText(),attempts.getText());
@@ -192,10 +200,19 @@ public class guessGame extends Application {
 
         });
 
-//        return new Pair<String, String>(maxValue.getText(),attempts.getText());
         return new Pair<>(maxValue.getText(),attempts.getText());
     }
 
+    public int  randomNum(int max) {
+        Random rand = new Random();
+
+        // if max not equals 0 returns true then max is returned else 100 is given
+        //max = (max != 0) ? max : 100;
+
+        int randInt = rand.nextInt(max);
+
+        return randInt;
+    }
 
 //    public Scene gameRounds(int max) {
 //        Button btn1 = new Button("main click");
@@ -285,17 +302,6 @@ public class guessGame extends Application {
 //        return mainScene;
 //    }
 
-
-    public int  randomNum(int max) {
-        Random rand = new Random();
-
-        // if max not equals 0 returns true then max is returned else 100 is given
-        //max = (max != 0) ? max : 100;
-
-        int randInt = rand.nextInt(max);
-
-        return randInt;
-    }
 
 
 }
