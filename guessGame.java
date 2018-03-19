@@ -135,7 +135,7 @@ public class guessGame extends Application {
         } );
 
         Scene mainScene = new Scene(bp,600,400);
-       
+
         primaryStage.setTitle("GUESS GAME!");
         primaryStage.setScene(mainScene);
         primaryStage.show();
