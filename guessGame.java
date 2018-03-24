@@ -18,6 +18,8 @@ import javafx.util.Pair;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class guessGame extends Application {
 
@@ -28,12 +30,53 @@ public class guessGame extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        Pair<String, String> tempInput = intro();
-        System.out.println("max value:"+tempInput.getKey());
-        System.out.println("attempt number:"+tempInput.getValue());
+        AtomicReference<Pair<String, String>> tempInput = new AtomicReference<>(intro());
+        System.out.println("max value:"+ tempInput.get().getKey());
+        System.out.println("attempt number:"+ tempInput.get().getValue());
 
-        int randInt = Integer.valueOf(tempInput.getKey() );
-        int attempts = Integer.valueOf(tempInput.getValue() );
+        // user input from textfields
+        AtomicInteger randInt = new AtomicInteger(Integer.valueOf(tempInput.get().getKey()));
+        AtomicInteger attempts = new AtomicInteger(Integer.valueOf(tempInput.get().getValue()));
+
+
+        Text sceneTitle = new Text("Guess Game");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD,20) );
+
+        // show user the various info related to game
+        Label input = new Label("Pleas guess number: ");
+        TextField userText = new TextField();
+        Label userNum = new Label("0");
+        Button submit = new Button("Submit");
+
+        Label attemptText = new Label("Number of attempts left:");
+        Label numAttempts = new Label(String.valueOf(attempts.get()));
+        Label userShowText = new Label("Previous user guess:");
+        Label showHighLow = new Label("=");
+        Label unknownNum = new Label("?");
+
+        HBox attemptPart = new HBox();
+        attemptPart.setSpacing(10);
+        attemptPart.setPadding(new Insets(10));
+        attemptPart.getChildren().addAll(attemptText,numAttempts);
+
+        ListView<Label> prevGuesses = new ListView<>();
+        VBox vbRight = new VBox();
+        vbRight.setPadding(new Insets(5,50,10,10));
+        vbRight.getChildren().addAll(attemptPart, prevGuesses);
+
+        HBox prevUserGuessRow = new HBox();
+        prevUserGuessRow.setSpacing(15);
+        prevUserGuessRow.getChildren().addAll(userShowText,userNum, showHighLow, unknownNum);
+
+        // result label for win or lose result
+        Label wonLoseResult = new Label();
+        wonLoseResult.setPadding(new Insets(15,10,5,5));
+        wonLoseResult.setFont(Font.font("Tahoma",FontWeight.BOLD,12));
+
+        VBox userInteraction = new VBox();
+        userInteraction.setPadding(new Insets(10, 10,15,10));
+        userInteraction.setSpacing(5);
+        userInteraction.getChildren().addAll(sceneTitle,input, userText, submit, prevUserGuessRow, wonLoseResult);
 
 
         Button btn1 = new Button("main click");
@@ -41,7 +84,24 @@ public class guessGame extends Application {
         Button btn3 = new Button("Replay Game");
 
         btn3.setOnAction( (event -> {
-            intro();
+            Pair<String, String> temp = intro();
+
+            tempInput.set(intro());
+
+//            randInt.set(Integer.valueOf(temp.getKey() ));
+
+            randInt.set(Integer.valueOf(tempInput.get().getKey()));
+            attempts.set(Integer.valueOf(tempInput.get().getValue()) );
+//            System.out.println(randInt);
+//            System.out.println(attempts);
+
+            userText.setText("");
+            userNum.setText("0");
+            showHighLow.setText("=");
+            unknownNum.setText("?");
+            numAttempts.setText(String.valueOf(attempts) );
+            prevGuesses.getItems().clear();
+            wonLoseResult.setText("");
         }) );
 
         btn1.setOnAction(new EventHandler<ActionEvent>() {
@@ -60,51 +120,15 @@ public class guessGame extends Application {
         HBox hb = new HBox();
         hb.setSpacing(10);
         hb.setPadding(new Insets(5,10,5,10));
-        hb.getChildren().addAll(btn1,btn2);
-
-        Text sceneTitle = new Text("Guess Game");
-        sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD,20) );
-
-        Label input = new Label("Pleas guess number: ");
-        TextField userText = new TextField();
-        Label userNum = new Label("0");
-        Button submit = new Button("Submit");
-
-        Label attemptText = new Label("Number of attempts left:");
-        Label numAttempts = new Label(String.valueOf(attempts));
-        Label userShowText = new Label("Previous user guess:");
-        Label showHighLow = new Label("=");
-        Label unknownNum = new Label("?");
-
-        HBox attemptPart = new HBox();
-        attemptPart.setSpacing(10);
-        attemptPart.setPadding(new Insets(10));
-        attemptPart.getChildren().addAll(attemptText,numAttempts);
-
-        ListView<Label> prevGuesses = new ListView<>();
-        VBox vbRight = new VBox();
-        vbRight.setPadding(new Insets(5,50,10,10));
-        vbRight.getChildren().addAll(attemptPart, prevGuesses);
+        hb.getChildren().addAll(btn1,btn2, btn3);
 
 
-        HBox prevUserGuessRow = new HBox();
-        prevUserGuessRow.setSpacing(15);
-        prevUserGuessRow.getChildren().addAll(userShowText,userNum, showHighLow, unknownNum);
 
-        Label wonLoseResult = new Label();
-        wonLoseResult.setPadding(new Insets(15,10,5,5));
-        wonLoseResult.setFont(Font.font("Tahoma",FontWeight.BOLD,12));
-
-        VBox userInteraction = new VBox();
-        userInteraction.setPadding(new Insets(10, 10,15,10));
-        userInteraction.setSpacing(5);
-        userInteraction.getChildren().addAll(sceneTitle,input, userText, submit, prevUserGuessRow, wonLoseResult);
 
         BorderPane bp = new BorderPane();
         bp.setBottom(hb);
         bp.setLeft(userInteraction);
         bp.setRight(vbRight);
-
 
         submit.setOnAction((event) -> {
 
@@ -113,20 +137,20 @@ public class guessGame extends Application {
                 Label guess = new Label(userText.getText());
                 prevGuesses.getItems().add(guess);
 
-                if (Integer.valueOf(userText.getText()) < randInt ) {
+                if (Integer.valueOf(userText.getText()) < randInt.get()) {
                     showHighLow.setText("<");
-                } else if (Integer.valueOf(userText.getText()) > randInt) {
+                } else if (Integer.valueOf(userText.getText()) > randInt.get()) {
                     showHighLow.setText(">");
                 } else {
                     showHighLow.setText("=");
-                    unknownNum.setText(String.valueOf(randInt) );
+                    unknownNum.setText(String.valueOf(randInt.get()) );
                     wonLoseResult.setText("SUCCES, You found the unknown number!");
                 }
 
             } else {
                 userNum.setText("No new number from user");
             }
-            int aLeft = attempts-prevGuesses.getItems().size();
+            int aLeft = attempts.get() -prevGuesses.getItems().size();
             numAttempts.setText(String.valueOf(aLeft ));
             if (aLeft <= 0) {
                 wonLoseResult.setText("Game Over, You ran out of attempts!");
@@ -139,8 +163,6 @@ public class guessGame extends Application {
         primaryStage.setTitle("GUESS GAME!");
         primaryStage.setScene(mainScene);
         primaryStage.show();
-
-
 
 
     }
