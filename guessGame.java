@@ -26,18 +26,20 @@ public class guessGame extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+        int randInt = 0;
 
     @Override
     public void start(Stage primaryStage) {
 
-        AtomicReference<Pair<String, String>> tempInput = new AtomicReference<>(intro());
-        System.out.println("max value:"+ tempInput.get().getKey());
-        System.out.println("attempt number:"+ tempInput.get().getValue());
+        Pair<String, String> tempInput = intro();
+        System.out.println("max value:"+ tempInput.getKey());
+        System.out.println("attempt number:"+ tempInput.getValue());
 
         // user input from textfields
-        AtomicInteger randInt = new AtomicInteger(Integer.valueOf(tempInput.get().getKey()));
-        AtomicInteger attempts = new AtomicInteger(Integer.valueOf(tempInput.get().getValue()));
+        randInt = Integer.valueOf(tempInput.getKey());
+        int attempts = Integer.valueOf(tempInput.getValue());
 
+//        System.out.println("chosen number:"+randInt);
 
         Text sceneTitle = new Text("Guess Game");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD,20) );
@@ -49,7 +51,7 @@ public class guessGame extends Application {
         Button submit = new Button("Submit");
 
         Label attemptText = new Label("Number of attempts left:");
-        Label numAttempts = new Label(String.valueOf(attempts.get()));
+        Label numAttempts = new Label(String.valueOf(attempts ));
         Label userShowText = new Label("Previous user guess:");
         Label showHighLow = new Label("=");
         Label unknownNum = new Label("?");
@@ -85,13 +87,11 @@ public class guessGame extends Application {
 
         btn3.setOnAction( (event -> {
             Pair<String, String> temp = intro();
+//            tempInput.set(intro());
 
-            tempInput.set(intro());
+            randInt = Integer.valueOf(temp.getKey() );
+            int a = Integer.valueOf(temp.getValue());
 
-//            randInt.set(Integer.valueOf(temp.getKey() ));
-
-            randInt.set(Integer.valueOf(tempInput.get().getKey()));
-            attempts.set(Integer.valueOf(tempInput.get().getValue()) );
 //            System.out.println(randInt);
 //            System.out.println(attempts);
 
@@ -99,7 +99,7 @@ public class guessGame extends Application {
             userNum.setText("0");
             showHighLow.setText("=");
             unknownNum.setText("?");
-            numAttempts.setText(String.valueOf(attempts) );
+            numAttempts.setText(String.valueOf(a) );
             prevGuesses.getItems().clear();
             wonLoseResult.setText("");
         }) );
@@ -123,8 +123,6 @@ public class guessGame extends Application {
         hb.getChildren().addAll(btn1,btn2, btn3);
 
 
-
-
         BorderPane bp = new BorderPane();
         bp.setBottom(hb);
         bp.setLeft(userInteraction);
@@ -137,20 +135,20 @@ public class guessGame extends Application {
                 Label guess = new Label(userText.getText());
                 prevGuesses.getItems().add(guess);
 
-                if (Integer.valueOf(userText.getText()) < randInt.get()) {
+                if (Integer.valueOf(userText.getText()) < randInt ) {
                     showHighLow.setText("<");
-                } else if (Integer.valueOf(userText.getText()) > randInt.get()) {
+                } else if (Integer.valueOf(userText.getText()) > randInt ) {
                     showHighLow.setText(">");
                 } else {
                     showHighLow.setText("=");
-                    unknownNum.setText(String.valueOf(randInt.get()) );
+                    unknownNum.setText(String.valueOf(randInt ) );
                     wonLoseResult.setText("SUCCES, You found the unknown number!");
                 }
 
             } else {
                 userNum.setText("No new number from user");
             }
-            int aLeft = attempts.get() -prevGuesses.getItems().size();
+            int aLeft = attempts - prevGuesses.getItems().size();
             numAttempts.setText(String.valueOf(aLeft ));
             if (aLeft <= 0) {
                 wonLoseResult.setText("Game Over, You ran out of attempts!");
